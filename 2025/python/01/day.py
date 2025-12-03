@@ -3,7 +3,7 @@ import re
 from collections import deque
 from pathlib import Path
 
-PROD = False
+PROD = True
 
 def load_input():
     return (Path() / "input.txt").read_text()
@@ -25,24 +25,43 @@ INPUT = load_input() if PROD else TEST_INPUT
 
 
 def part_1() -> str:
-    def _f(d: int = 0, g: list[int] = None) -> int:
+    def _f(s: int = 0, g: list[int] = None) -> int:
         _c = 0
         for n in g:
-            d += n
-            _c += 1 if d % 100 == 0 else 0
+            s += n
+            _c += 1 if s % 100 == 0 else 0
         return _c
 
     return _f(
-        d=50,
+        s=50,
         g=[
-            -1 * int(g.group()[1:]) if g.group()[0] == "L"
-            else int(g.group()[1:])
+            -1 * int(g.group()[1:])
+            if g.group()[0] == "L" else int(g.group()[1:])
             for g in re.compile(r"[LR]\d{1,9}").finditer(INPUT)
         ]
     )
 
 def part_2() -> str:
-    raise NotImplementedError
+    def _f(s: int = 0, g: list[int] = None) -> int:
+        _c = 0
+        for n in g:
+            y = s + n
+            _c += (
+                ((s - 1) // 100) - ((y - 1) // 100)
+                if n < 0
+                else (y // 100) - (s // 100)
+            )
+            s = y % 100
+        return _c
+
+    return _f(
+        s=50,
+        g=[
+            -1 * int(g.group()[1:])
+            if g.group()[0] == "L" else int(g.group()[1:])
+            for g in re.compile(r"[LR]\d{1,9}").finditer(INPUT)
+        ]
+    )
 
 
 def parse_args() -> argparse.Namespace:
