@@ -16,9 +16,9 @@ INPUT = load_input() if PROD else TEST_INPUT
 
 
 def part_1() -> str:
-    def _f(l: list[tuple[int, int]] = []) -> str:
+    def _f(_l: list[tuple[int, int]] = []) -> str:
         _sum = 0
-        for i in chain.from_iterable(range(s,e+1) for s,e in l):
+        for i in chain.from_iterable(range(s,e+1) for s,e in _l):
             if len(str(i)) % 2 == 0:
                 _sum += i if str(i)[:len(str(i))//2] == str(i)[len(str(i))//2:] else 0
 
@@ -27,7 +27,14 @@ def part_1() -> str:
     return (_f([(int(s), int(e)) for s,e in re.findall(r"(\d+)-(\d+)", INPUT)]))
 
 def part_2() -> str:
-    raise NotImplementedError
+    def _f(_l: list[tuple[int, int]] = []) -> str:
+        _sum = 0
+        for i in chain.from_iterable(range(s,e+1) for s,e in _l):
+            _sum += i if re.match(r"(\d+?)\1+$", str(i)) else 0
+
+        return str(_sum)
+
+    return _f([(int(s), int(e)) for s,e in re.findall(r"(\d+)-(\d+)", INPUT)])
 
 
 def parse_args() -> argparse.Namespace:
